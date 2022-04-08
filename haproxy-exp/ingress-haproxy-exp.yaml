@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  name: ingress-haproxy-exp
+  namespace: exporters
+spec:
+  rules:
+  - host: haproxy-exp.k8s.cl2.srm.norbit.ru
+    http:
+      paths:
+      - backend:
+          service:
+            name: svc-haproxy-exp
+            port:
+              number: 9101
+        path: /metrics
+        pathType: Prefix

@@ -1,0 +1,21 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: svc-haproxy-exp
+  namespace: exporters
+  labels:
+    app: haproxy-exp
+    app.kubernetes.io/component: haproxy-exp
+    app.kubernetes.io/instance: haproxy-exp
+    app.kubernetes.io/part-of: haproxy-exp-app
+    app.openshift.io/runtime-version: latest
+spec:
+  ports:
+    - name: 9101-tcp
+      protocol: TCP
+      port: 9101
+      targetPort: 9101
+  selector:
+    app: haproxy-exp
+  type: ClusterIP
+  sessionAffinity: None
