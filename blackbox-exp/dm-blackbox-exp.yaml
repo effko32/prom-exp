@@ -1,0 +1,59 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  namespace: exporters
+  name: blackbox-exp
+  labels:
+    app: blackbox-exp
+    app.kubernetes.io/component: blackbox-exp
+    app.kubernetes.io/instance: blackbox-exp
+    app.kubernetes.io/part-of: blackbox-exp
+    app.openshift.io/runtime-namespace: exporters
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blackbox-exp
+  template:
+    metadata:
+      labels:
+        app: blackbox-exp
+    spec:
+      volumes:
+        - name: config
+          configMap:
+            name: cm-blackbox-exp
+            defaultMode: 420
+      containers:
+      - image: prom/blackbox-exporter
+        name: blackbox-exp
+        ports:
+          - containerPort: 9115
+            protocol: TCP
+        imagePullPolicy: Always
+        volumeMounts:
+          - name: config
+            mountPath: /etc/blackbox_exporter/
+        terminationMessagePolicy: File
+        envFrom:
+          - configMapRef:
+              name: cm-blackbox-exp
+        resources:
+          limits:
+            cpu: 100m
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 1Gi
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600

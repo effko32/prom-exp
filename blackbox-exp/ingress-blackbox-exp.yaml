@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  name: ingress-blackbox-exp
+  namespace: exporters
+spec:
+  rules:
+  - host: blackbox-exp.k8s.cluster.local
+    http:
+      paths:
+      - backend:
+          service:
+            name: svc-blackbox-exp
+            port:
+              number: 9115
+        path: /
+        pathType: Prefix

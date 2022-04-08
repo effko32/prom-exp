@@ -1,0 +1,20 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: svc-blackbox-exp
+  namespace: exporters
+  labels:
+    app: blackbox-exp
+    app.kubernetes.io/component: blackbox-exp
+    app.kubernetes.io/instance: blackbox-exp
+    app.kubernetes.io/part-of: blackbox-exp-app
+    app.openshift.io/runtime-version: latest
+spec:
+  ports:
+    - protocol: TCP
+      port: 9115
+      targetPort: 9115
+  selector:
+    app: blackbox-exp
+  type: ClusterIP
+  sessionAffinity: None
